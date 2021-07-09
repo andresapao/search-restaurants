@@ -1,10 +1,10 @@
+
 import logo from './logo.svg';
 import React, { useState, setState, useMemo, useEffect } from "react";
 import axios from "axios";
 import ReactDOM from 'react-dom';
 import { useTable } from "react-table";
 import './App.css';
- 
 function Table({ columns, data }) {
   const {
    getTableProps,
@@ -54,7 +54,8 @@ function App () {
     distance: 5,
     cuisine: ''
   });
-  let data = [];
+  const [data, setData] = useState([]);
+
   const columns = useMemo(
       () => [
         {
@@ -123,8 +124,9 @@ function App () {
       .then((res) => {
         res.json().then((jsonres) =>
         {
-          data = jsonres;
-          console.log(data);
+          console.log(jsonres);
+
+          setData(jsonres);
         });
       })
       .catch((err) => console.log(err))
