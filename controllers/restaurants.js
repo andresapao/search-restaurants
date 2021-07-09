@@ -14,8 +14,6 @@ module.exports = () => {
     }
     function applyCuisineCriteria(obj, req)
     {
-        console.log(obj);
-        console.log((req.query.cuisine === undefined || obj.cuisineDesc.toUpperCase().includes(req.query.cuisine.toUpperCase())));
         return (req.query.cuisine === undefined || obj.cuisineDesc.toUpperCase().includes(req.query.cuisine.toUpperCase()));
     }
     let restaurants = [];    
