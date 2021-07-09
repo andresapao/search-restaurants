@@ -43,10 +43,23 @@ module.exports = () => {
     controller.getRestaurants = (req, res) => res.status(200).json(restaurants);
     controller.applySearch = (req, res) =>
     {
-        const result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
-
+        let result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
+        result = result.splice(1,5).sort(compare);
         return res.status(200).json(result);
     }
-
+    function compare( a, b ) {
+        if ( a.distance < b.distance ){
+          return -1;
+        }
+        if ( b.rating > a.rating ){
+          return 1;
+        }
+        if ( a.price < b.price ){
+            return 1;
+          }
+  
+        return 0;
+      }
+      
     return controller;
 };
