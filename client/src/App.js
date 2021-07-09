@@ -54,7 +54,7 @@ function App () {
     distance: 5,
     cuisine: ''
   });
-  const data = [];
+  let data = [];
   const columns = useMemo(
       () => [
         {
@@ -72,15 +72,18 @@ function App () {
         }
       ]
     );
-    /*
+    
     useEffect(() => {
+      /*
       axios("/api/restaurants")
         .then((res) => {
           setData(res.data);
         })
         .catch((err) => console.log(err))
+        */
+       console.log('effect', data)
     }, []);
-    */
+    
     const inputsHandler = (e) =>{
       setInputField( {[e.target.name]: e.target.value} )
     }   
@@ -118,11 +121,13 @@ function App () {
       let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
       fetch(mainUrl.concat(urlQueryParams))
       .then((res) => {
-        console.log(res.json());
-        data = res.data;
+        res.json().then((jsonres) =>
+        {
+          data = jsonres;
+          console.log(data);
+        });
       })
       .catch((err) => console.log(err))
-     
      event.preventDefault();     
     };
     function handleChange(event) {
@@ -164,8 +169,8 @@ function App () {
 
         <input type="submit" value="Submit" />
       </form>
+      <Table columns={columns} data={data} />
 
-          <Table columns={columns} data={data} />        
       </div>
     );  
   
