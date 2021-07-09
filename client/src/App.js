@@ -45,9 +45,16 @@ function Table({ columns, data }) {
 }
  
 
-function App2 () {
+function App () {
 
-  const [data, setData] = useState([]);
+//  const [desc, setDesc, rating, setRating, distance, setDistance, cuisine, setCuisine] = useState(['', 1, 5, '']);
+  const [inputField , setInputField] = useState({
+    desc: '',
+    rating: 1,
+    distance: 5,
+    cuisine: ''
+  });
+  const data = [];
   const columns = useMemo(
       () => [
         {
@@ -65,6 +72,7 @@ function App2 () {
         }
       ]
     );
+    /*
     useEffect(() => {
       axios("/api/restaurants")
         .then((res) => {
@@ -72,6 +80,56 @@ function App2 () {
         })
         .catch((err) => console.log(err))
     }, []);
+    */
+    const inputsHandler = (e) =>{
+      setInputField( {[e.target.name]: e.target.value} )
+    }   
+    const handleSubmit = (event) => {
+      /*
+      let urlQueryParams = '';
+      
+      for (const key of Object.keys(state)) {
+        if(state[key])
+        {
+          urlQueryParams = urlQueryParams.length > 0 ? urlQueryParams.concat('&') : urlQueryParams.concat('');
+          urlQueryParams = urlQueryParams.concat(`${key}=${state[key]}`);
+        }
+      }
+      urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
+      let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
+      fetch(mainUrl.concat(urlQueryParams))
+      .then((res) => {
+        console.log(res.json());
+        data = res.data;
+      })
+      .catch((err) => console.log(err))
+  
+      event.preventDefault();
+      */
+     let urlQueryParams = '';
+      for (const key of Object.keys(inputField)) {
+        if(inputField[key])
+        {
+          urlQueryParams = urlQueryParams.length > 0 ? urlQueryParams.concat('&') : urlQueryParams.concat('');
+          urlQueryParams = urlQueryParams.concat(`${key}=${inputField[key]}`);
+        }
+      }
+      urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
+      let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
+      fetch(mainUrl.concat(urlQueryParams))
+      .then((res) => {
+        console.log(res.json());
+        data = res.data;
+      })
+      .catch((err) => console.log(err))
+     
+     event.preventDefault();     
+    };
+    function handleChange(event) {
+      const { name, value } = event.target;
+      setState(prevState => ({ ...prevState, [name]: value }));
+    }      
+  
 /*
     // fetching the GET route from the Express server which matches the GET route from server.js
   callBackendAPI = async () => {
@@ -86,6 +144,27 @@ function App2 () {
 */
     return (
       <div className="App">
+        <form onSubmit={handleSubmit}>
+        <label>
+          Rating:
+          <input type="text" name="rating"  onChange={inputsHandler}/>
+        </label>
+        <label>
+          Name:
+          <input type="text" name="desc"  onChange={inputsHandler}/>
+        </label>
+        <label>
+          Distance:
+          <input type="text" name="distance"  onChange={inputsHandler}/>
+        </label>
+        <label>
+          Cuisine:
+          <input type="text" name="cuisine"  onChange={inputsHandler}/>
+        </label>
+
+        <input type="submit" value="Submit" />
+      </form>
+
           <Table columns={columns} data={data} />        
       </div>
     );  
@@ -93,7 +172,7 @@ function App2 () {
   
 
 }
-class App extends React.Component {
+class App3 extends React.Component {
   constructor() {
     super();
     this.state = {name : '', rating: 1, distance: 5, cuisine: ''};
@@ -108,12 +187,10 @@ class App extends React.Component {
         urlQueryParams = urlQueryParams.concat(`${key}=${this.state[key]}`);
       }
     }
-    console.log(urlQueryParams);
     urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
     let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
     fetch(mainUrl.concat(urlQueryParams))
     .then((res) => {
-//      setData(res.data);
       console.log(res.json());
     })
     .catch((err) => console.log(err))
