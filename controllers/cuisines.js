@@ -3,15 +3,12 @@ module.exports = () => {
 
     function fetchData()
     {
-        const convertedObj =  csvjson().fromFile('./source_data/cuisines.csv');
-        let cuisines = [];
-        convertedObj.then(res => cuisines = res);
-        return cuisines;
+        return  csvjson().fromFile('./source_data/cuisines.csv');
     }
 
     const controller = {};
 //    controller.getCuisines = (req, res) => res.status(200).json(cuisines);
-    controller.getCuisines = async () => fetchData();
+    controller.getCuisines = () => fetchData();
 
     return controller;
 };
