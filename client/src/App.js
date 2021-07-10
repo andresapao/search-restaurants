@@ -1,5 +1,3 @@
-
-import logo from './logo.svg';
 import React, { useState, setState, useMemo, useEffect } from "react";
 import axios from "axios";
 import ReactDOM from 'react-dom';
@@ -48,12 +46,7 @@ function Table({ columns, data }) {
 function App () {
 
 //  const [desc, setDesc, rating, setRating, distance, setDistance, cuisine, setCuisine] = useState(['', 1, 5, '']);
-  const [inputField , setInputField] = useState({
-    desc: '',
-    rating: 1,
-    distance: 5,
-    cuisine: ''
-  });
+  const [inputField , setInputField] = useState({});
   const [data, setData] = useState([]);
 
   const columns = useMemo(
@@ -66,56 +59,41 @@ function App () {
               accessor: "name"
             },
             {
+              Header: "Distance",
+              accessor: "distance"
+            },
+            {
               Header: "Rating",
               accessor: "customer_rating"
+            },
+            {
+              Header: "Price",
+              accessor: "price"
+            },
+            {
+              Header: "Cuisine",
+              accessor: "cuisineDesc"
             }
           ]
         }
       ]
     );
     
-    useEffect(() => {
-      /*
-      axios("/api/restaurants")
-        .then((res) => {
-          setData(res.data);
-        })
-        .catch((err) => console.log(err))
-        */
-       console.log('effect', data)
-    }, []);
-    
-    const inputsHandler = (e) =>{
-      setInputField( {[e.target.name]: e.target.value} )
+    const inputsHandler = (e) => {
+      setInputField({...inputField, [e.target.name]: e.target.value} )
+      console.log('input', inputField);
+
     }   
     const handleSubmit = (event) => {
-      /*
-      let urlQueryParams = '';
-      
-      for (const key of Object.keys(state)) {
-        if(state[key])
-        {
-          urlQueryParams = urlQueryParams.length > 0 ? urlQueryParams.concat('&') : urlQueryParams.concat('');
-          urlQueryParams = urlQueryParams.concat(`${key}=${state[key]}`);
-        }
-      }
-      urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
-      let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
-      fetch(mainUrl.concat(urlQueryParams))
-      .then((res) => {
-        console.log(res.json());
-        data = res.data;
-      })
-      .catch((err) => console.log(err))
-  
-      event.preventDefault();
-      */
      let urlQueryParams = '';
       for (const key of Object.keys(inputField)) {
-        if(inputField[key])
+        let keyValue = inputField[key];
+        let keyName = key;
+        if( keyName === 'desc') keyName = 'name';
+        if(keyValue)
         {
           urlQueryParams = urlQueryParams.length > 0 ? urlQueryParams.concat('&') : urlQueryParams.concat('');
-          urlQueryParams = urlQueryParams.concat(`${key}=${inputField[key]}`);
+          urlQueryParams = urlQueryParams.concat(`${keyName}=${keyValue}`);
         }
       }
       urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
@@ -132,23 +110,7 @@ function App () {
       .catch((err) => console.log(err))
      event.preventDefault();     
     };
-    function handleChange(event) {
-      const { name, value } = event.target;
-      setState(prevState => ({ ...prevState, [name]: value }));
-    }      
   
-/*
-    // fetching the GET route from the Express server which matches the GET route from server.js
-  callBackendAPI = async () => {
-    const response = await fetch('/api/restaurants');
-    const body = await response.json();
-
-    if (response.status !== 200) {
-      throw Error(body.message) 
-    }
-    return body;
-  };
-*/
     return (
       <div className="App">
         <form onSubmit={handleSubmit}>

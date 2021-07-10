@@ -6,6 +6,7 @@ module.exports = () => {
     }
     function applyNameCriteria(obj, req)
     {
+        console.log('name', obj.name, req.query.name);
         return (req.query.name === undefined || obj.name.toUpperCase().includes(req.query.name.toUpperCase()));
     }
     function applyRatingCriteria(obj, req)
@@ -44,21 +45,16 @@ module.exports = () => {
     controller.applySearch = (req, res) =>
     {
         let result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
-        result = result.splice(1,5).sort(compare);
+        result = result.sort(compare).splice(1,5);
         return res.status(200).json(result);
     }
     function compare( a, b ) {
-        if ( a.distance < b.distance ){
-          return -1;
-        }
-        if ( b.rating > a.rating ){
-          return 1;
-        }
-        if ( a.price < b.price ){
-            return 1;
-          }
-  
-        return 0;
+
+        let distanceComparison = (Number.parseInt(a.distance) - Number.parseInt(b.distance));
+        let ratingComparison = (Number.parseInt(b.customer_rating) - Number.parseInt(a.customer_rating));            
+        let priceComparison = (Number.parseInt(a.price) - Number.parseInt(b.price));            
+        console.log(distanceComparison, ratingComparison, priceComparison);
+        return distanceComparison || ratingComparison || priceComparison;
       }
       
     return controller;
