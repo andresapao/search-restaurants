@@ -15,6 +15,6 @@ That's and app which allows the user to search restaurants by some arguments
 
 **Executing**
 
-To start backend service, go to main directory and type command *"node app.js"*
+To start backend service, go to main directory and type command *"npm install"* and *"node app.js"*
 
-To start frontend service, go to "client" directory and type command *"npm start"*
+To start frontend service, go to "client" directory and type command *"npm install"* and *"npm start"*

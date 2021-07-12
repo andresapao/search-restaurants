@@ -81,7 +81,6 @@ function App () {
     
     const inputsHandler = (e) => {
       setInputField({...inputField, [e.target.name]: e.target.value} )
-      console.log('input', inputField);
 
     }   
     const handleSubmit = (event) => {
@@ -100,14 +99,17 @@ function App () {
       let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
       fetch(mainUrl.concat(urlQueryParams))
       .then((res) => {
-        res.json().then((jsonres) =>
-        {
-          console.log(jsonres);
-
-          setData(jsonres);
+        console.log(res);
+        if (res.ok) return res.json();
+        return res.json().then(response => { 
+          alert(response.message);
+          return [];
         });
-      })
-      .catch((err) => console.log(err))
+        }).then((jsonres) =>
+        {
+          setData(jsonres);
+        })
+      
      event.preventDefault();     
     };
   
@@ -141,63 +143,4 @@ function App () {
   
 
 }
-class App3 extends React.Component {
-  constructor() {
-    super();
-    this.state = {name : '', rating: 1, distance: 5, cuisine: ''};
-  }
-
-  handleSubmit = (event)  =>{
-    let urlQueryParams = '';
-    for (const key of Object.keys(this.state)) {
-      if(this.state[key])
-      {
-        urlQueryParams = urlQueryParams.length > 0 ? urlQueryParams.concat('&') : urlQueryParams.concat('');
-        urlQueryParams = urlQueryParams.concat(`${key}=${this.state[key]}`);
-      }
-    }
-    urlQueryParams = urlQueryParams.length > 0 ? `?${urlQueryParams}` : urlQueryParams;
-    let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
-    fetch(mainUrl.concat(urlQueryParams))
-    .then((res) => {
-      console.log(res.json());
-    })
-    .catch((err) => console.log(err))
-
-    event.preventDefault();
-  }  
-  handleChange = (evt) => {
-    const value = evt.target.value;
-    this.setState({
-      ...this.state,
-      [evt.target.name]: value
-    });
-  }
-  render() { 
-    return (
-      <form onSubmit={this.handleSubmit}>
-      <label>
-        Rating:
-        <input type="text" name="rating" value={this.state.rating} onChange={this.handleChange}/>
-      </label>
-      <label>
-        Name:
-        <input type="text" name="rating" value={this.state.name} onChange={this.handleChange}/>
-      </label>
-      <label>
-        Distance:
-        <input type="text" name="rating" value={this.state.distance} onChange={this.handleChange}/>
-      </label>
-      <label>
-        Cuisine:
-        <input type="text" name="cuisine" value={this.state.cuisine} onChange={this.handleChange}/>
-      </label>
-
-      <input type="submit" value="Submit" />
-    </form>
-
-   )
-  }
-}
-//ReactDOM.render(<App/>, document.getElementById('root'));
 export default App;

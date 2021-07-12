@@ -2,30 +2,28 @@ module.exports = () => {
     const csvjson = require('csvtojson');
     function applyDistanceCriteria(obj, req)
     {
-//        console.log('distance', req.query.distance === undefined || Number.parseInt(obj.distance) <= Number.parseInt(req.query.distance));
+        if(req.query.distance && Number.isNaN(Number.parseInt(req.query.distance))) throw new Error("Invalid distance")
+        if(req.query.distance < 1 || req.query.distance > 10) throw new Error("Distance should be between 1 and 10")                
         return (req.query.distance === undefined || Number.parseInt(obj.distance) <= Number.parseInt(req.query.distance));
     }
     function applyNameCriteria(obj, req)
     {
-//        console.log('name', obj.name, req.query.name);
-//        console.log('name', obj.name.toUpperCase().includes(req.query.name.toUpperCase()));
         return (req.query.name === undefined || obj.name.toUpperCase().includes(req.query.name.toUpperCase()));
     }
     function applyRatingCriteria(obj, req)
     {
-//        console.log('rating', req.query.rating === undefined  || Number.parseInt(obj.customer_rating) >= Number.parseInt(req.query.rating));
+        if(req.query.rating && Number.isNaN(Number.parseInt(req.query.rating))) throw new Error("Invalid rating")
+        if(req.query.rating < 1 || req.query.rating > 5) throw new Error("Rating should be between 1 and 5")        
         return (req.query.rating === undefined  || Number.parseInt(obj.customer_rating) >= Number.parseInt(req.query.rating));
     }
     function applyCuisineCriteria(obj, req)
     {
-//        console.log('cuisine', req.query.cuisine  === undefined || obj.cuisineDesc.toUpperCase().includes(req.query.cuisine.toUpperCase()));
         return (req.query.cuisine  === undefined || obj.cuisineDesc.toUpperCase().includes(req.query.cuisine.toUpperCase()));
     }
     let restaurants = [];    
     const convertedObj =  csvjson().fromFile('./source_data/restaurants.csv');
     cuisinesController = require('./cuisines')();
 
-//    const cuisinesObj =  csvjson().fromFile('./source_data/cuisines.csv');
     let cuisines = [];
     cuisinesObj = cuisinesController.getCuisines();
     cuisinesObj.then(res =>  new Promise(res));
@@ -49,9 +47,16 @@ module.exports = () => {
     controller.getRestaurants = (req, res) => res.status(200).json(restaurants);
     controller.applySearch = (req, res) =>
     {
-        let result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
-        result = result.sort(compare).splice(0,5);
-        return res.status(200).json(result);
+        try
+        {
+            let result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
+            result = result.sort(compare).splice(0,5);
+            return res.status(200).json(result);
+        }
+        catch(err)
+        {
+            return res.status(500).json({message: err.toString()});
+        }
     }
     function compare( a, b ) {
 
