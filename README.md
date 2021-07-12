@@ -2,9 +2,11 @@
 
 
 **Resume**
-That's and app which allows the user to search restaurants by some arguments
+
+That's an app which allows the user to search restaurants by some arguments
 
 **Stack**
+
 *Backend* - Nodejs, Express
 *Frontend* - React
 

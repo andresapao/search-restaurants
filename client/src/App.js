@@ -99,7 +99,6 @@ function App () {
       let mainUrl = urlQueryParams.length > 0 ? '/api/restaurants/search' : '/api/restaurants';
       fetch(mainUrl.concat(urlQueryParams))
       .then((res) => {
-        console.log(res);
         if (res.ok) return res.json();
         return res.json().then(response => { 
           alert(response.message);
@@ -127,6 +126,10 @@ function App () {
         <label>
           Distance:
           <input type="text" name="distance"  onChange={inputsHandler}/>
+        </label>
+        <label>
+          Price:
+          <input type="text" name="price"  onChange={inputsHandler}/>
         </label>
         <label>
           Cuisine:

@@ -2,17 +2,22 @@ module.exports = () => {
     const csvjson = require('csvtojson');
     function applyDistanceCriteria(obj, req)
     {
-        if(req.query.distance && Number.isNaN(Number.parseInt(req.query.distance))) throw new Error("Invalid distance")
         if(req.query.distance < 1 || req.query.distance > 10) throw new Error("Distance should be between 1 and 10")                
         return (req.query.distance === undefined || Number.parseInt(obj.distance) <= Number.parseInt(req.query.distance));
     }
+    function applyPriceCriteria(obj, req)
+    {
+
+        if(req.query.price < 10 || req.query.price > 50) throw new Error("Price should be between 10 and 50")                
+        return (req.query.distance === undefined || Number.parseInt(obj.price) <= Number.parseInt(req.query.price));
+    }
+
     function applyNameCriteria(obj, req)
     {
         return (req.query.name === undefined || obj.name.toUpperCase().includes(req.query.name.toUpperCase()));
     }
     function applyRatingCriteria(obj, req)
     {
-        if(req.query.rating && Number.isNaN(Number.parseInt(req.query.rating))) throw new Error("Invalid rating")
         if(req.query.rating < 1 || req.query.rating > 5) throw new Error("Rating should be between 1 and 5")        
         return (req.query.rating === undefined  || Number.parseInt(obj.customer_rating) >= Number.parseInt(req.query.rating));
     }
@@ -49,7 +54,15 @@ module.exports = () => {
     {
         try
         {
-            let result = restaurants.filter(obj => applyNameCriteria(obj, req) && applyRatingCriteria(obj, req) && applyDistanceCriteria(obj, req) && applyCuisineCriteria(obj, req));
+            if(req.query.distance && Number.isNaN(Number.parseInt(req.query.distance))) throw new Error("Invalid distance");
+            if(req.query.price && Number.isNaN(Number.parseInt(req.query.price))) throw new Error("Invalid price");
+            if(req.query.rating && Number.isNaN(Number.parseInt(req.query.rating))) throw new Error("Invalid rating")
+
+            let result = restaurants.filter(obj => applyNameCriteria(obj, req) && 
+                                                   applyRatingCriteria(obj, req) && 
+                                                   applyDistanceCriteria(obj, req) &&
+                                                   applyPriceCriteria(obj, req) &&                                                   
+                                                   applyCuisineCriteria(obj, req));
             result = result.sort(compare).splice(0,5);
             return res.status(200).json(result);
         }
